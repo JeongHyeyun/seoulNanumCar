@@ -16,5 +16,6 @@ module.exports = {
   ],
   rules: {
     "linebreak-style": "off",
+    "import/no-unresolved": "off",
   },
 };
