@@ -23,8 +23,10 @@
 
 <script>
 // @ is an alias to /src
+/* eslint-disable no-loop-func */
 import locationMap from '@/components/map.vue';
 import locationLists from '@/components/list.vue';
+// import axios from 'axios';
 
 export default {
   name: 'Home',
@@ -37,7 +39,29 @@ export default {
       isShow: {
         type: 'locationMap',
       },
+      carInfoList: [],
     };
+  },
+  created() {
+    // let startNumber = 1;
+    // let endNumber = 1000;
+    // let count = 0;
+    // let totalCount;
+    // do {
+    // axios.get(`http://openapi.seoul.go.kr:8088/${process.env.VUE_APP_API_KEY}/json/NanumcarSpotList/${startNumber}/${endNumber}`)
+    //   .then((response) => {
+    //     console.log(response.data.NanumcarSpotList.row);
+    //     this.carInfoList = [...this.carInfoList, response.data.NanumcarSpotList.row];
+    //     // console.log(Math.ceil(response.data.NanumcarSpotList.list_total_count / 1000));
+    //     // totalCount = response.data.NanumcarSpotList.list_total_count;
+    //     console.log(this.carInfoList);
+    //   })
+    //   .catch((error) => console.log(error));
+    // startNumber = +1000;
+    // endNumber = +1000;
+    // eslint-disable-next-line no-unused-vars
+    // count = +1;
+    // } while (count <= 2);
   },
 };
 </script>
