@@ -26,7 +26,7 @@
 /* eslint-disable no-loop-func */
 import locationMap from '@/components/map.vue';
 import locationLists from '@/components/list.vue';
-// import axios from 'axios';
+import axios from 'axios';
 
 export default {
   name: 'Home',
@@ -42,26 +42,29 @@ export default {
       carInfoList: [],
     };
   },
-  created() {
-    // let startNumber = 1;
-    // let endNumber = 1000;
-    // let count = 0;
-    // let totalCount;
-    // do {
-    // axios.get(`http://openapi.seoul.go.kr:8088/${process.env.VUE_APP_API_KEY}/json/NanumcarSpotList/${startNumber}/${endNumber}`)
-    //   .then((response) => {
-    //     console.log(response.data.NanumcarSpotList.row);
-    //     this.carInfoList = [...this.carInfoList, response.data.NanumcarSpotList.row];
-    //     // console.log(Math.ceil(response.data.NanumcarSpotList.list_total_count / 1000));
-    //     // totalCount = response.data.NanumcarSpotList.list_total_count;
-    //     console.log(this.carInfoList);
-    //   })
-    //   .catch((error) => console.log(error));
-    // startNumber = +1000;
-    // endNumber = +1000;
-    // eslint-disable-next-line no-unused-vars
-    // count = +1;
-    // } while (count <= 2);
+  async created() {
+    /**
+     * 데이터 로드하기
+     */
+    let startNumber = 1; // 시작넘버
+    let endNumber = 1000; // 끝넘버
+    let count = 0; // 카운트 수
+    let totalCount; // 전체 리스트 / 1000의 올림 (리스트는 한 번에 천 개씩 가져올 수 있음)
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      await axios.get(`http://openapi.seoul.go.kr:8088/${process.env.VUE_APP_API_KEY}/json/NanumcarSpotList/${startNumber}/${endNumber}`)
+        .then((response) => {
+          this.carInfoList = [...this.carInfoList, ...response.data.NanumcarSpotList.row]; // 리스트 저장
+          if (!totalCount) { // 불필요한 계산을 막기 위함
+            totalCount = Math.ceil(response.data.NanumcarSpotList.list_total_count / 1000);
+          }
+        })
+        .catch((error) => console.log(error));
+      startNumber += 1000; // 시작넘버 + 1000
+      endNumber += 1000; // 끝넘버 + 1000
+      // eslint-disable-next-line no-unused-vars
+      count += 1; // loop 돌아온 수
+    } while (count < totalCount); // loop 돌아온 수가 돌아야 할 수 보다 적을 때, 한 번 돌기
   },
 };
 </script>
