@@ -17,6 +17,7 @@
     <!-- nav end -->
     <component
       :is="isShow.type"
+      :carInfoList="carInfoList"
     />
   </div>
 </template>
