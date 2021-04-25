@@ -12,6 +12,31 @@ export default {
       map: null,
     };
   },
+  computed: {
+  },
+  methods: {
+    /**
+     * 마커 그리기
+     * @param {Object} location - 위치 {위도,경도}
+     * @param {Boolean} inInit - 초기 로딩 여부
+     */
+    drawLocation(location, isInit = false) {
+      const marker = new kakao.maps.Marker({ // 마커 그리기
+        position: location, // 그리는 곳 주소
+      });
+      marker.setMap(this.map); // 지도에 마커 표시
+      if (isInit) this.map.setCenter(location); // 마커가 표시된 곳으로 지도 중심 이동
+    },
+  },
+  created() {
+    setTimeout(() => { // 데이터 불러오는 로드의 시차
+      // eslint-disable-next-line no-restricted-syntax
+      for (const car of this.carInfoList) {
+        const location = new kakao.maps.LatLng(car.LA, car.LO);
+        this.drawLocation(location); // 맵에 그려주기
+      }
+    }, 1000);
+  },
   mounted() {
     /**
      * 지도 그리기
@@ -41,27 +66,12 @@ export default {
         const { latitude } = position.coords; // 위도
         const { longitude } = position.coords; // 경도
         const location = new kakao.maps.LatLng(latitude, longitude);
-        this.drawLocation(location);
+        this.drawLocation(location, true);
       });
     } else { // 현재 위치를 구할 수 없는 조건일 때,
       const location = new kakao.maps.LatLng(37.57821, 126.976936); // 광화문 좌표
-      this.drawLocation(location);
+      this.drawLocation(location, true);
     }
-  },
-  methods: {
-    /**
-     * 마커 그리기
-     * @param {Object} location - 위치 {위도,경도}
-     */
-    drawLocation(location) {
-      const marker = new kakao.maps.Marker({ // 마커 그리기
-        position: location, // 그리는 곳 주소
-      });
-      marker.setMap(this.map); // 지도에 마커 표시
-      this.map.setCenter(location); // 마커가 표시된 곳으로 지도 중심 이동
-    },
-  },
-  created() {
   },
 };
 </script>
