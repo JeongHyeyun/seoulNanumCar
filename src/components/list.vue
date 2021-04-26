@@ -6,7 +6,10 @@
 
 <script>
 export default {
-
+  props: ['carInfoList'],
+  created() {
+    console.log('list', this.carInfoList);
+  },
 };
 </script>
 
