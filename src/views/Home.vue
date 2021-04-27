@@ -44,6 +44,11 @@ export default {
     };
   },
   async created() {
+    // json 불가하다고 함...
+    axios.get(`http://openapi.seoul.go.kr:8088/${process.env.VUE_APP_API_KEY}/json/NanumcarCarList/1/1000/`)
+      .then((response) => {
+        console.log(response);
+      });
     /**
      * 데이터 로드하기
      */
