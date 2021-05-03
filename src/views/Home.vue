@@ -17,7 +17,7 @@
     <!-- nav end -->
     <component
       :is="isShow.type"
-      :carInfoList="carInfoList"
+      :covidCenter="covidCenter"
     />
   </div>
 </template>
@@ -40,44 +40,41 @@ export default {
       isShow: {
         type: 'locationMap',
       },
-      carInfoList: [],
+      covidCenter: [],
     };
   },
-  async created() {
-    // json 불가하다고 함...
-    // 다른 api로 바꿀 예정
-    // axios.get(`http://openapi.seoul.go.kr:8088/${process.env.VUE_APP_API_KEY}/json/NanumcarCarList/1/1000/`)
-    //   .then((response) => {
-    //     console.log(response);
-    //   });
-    // /**
-    //  * 데이터 로드하기
-    //  */
-    // let startNumber = 1; // 시작넘버
-    // let endNumber = 1000; // 끝넘버
-    // let count = 0; // 카운트 수
-    // let totalCount; // 전체 리스트 / 1000의 올림 (리스트는 한 번에 천 개씩 가져올 수 있음)
-    // do {
-    //   // eslint-disable-next-line no-await-in-loop
-    //   await axios.get(`http://openapi.seoul.go.kr:8088/${process.env.VUE_APP_API_KEY}/json/NanumcarSpotList/${startNumber}/${endNumber}`)
-    //     .then((response) => {
-    //       this.carInfoList = [...this.carInfoList, ...response.data.NanumcarSpotList.row];
-    // 리스트 저장
-    //       if (!totalCount) { // 불필요한 계산을 막기 위함
-    //         totalCount = Math.ceil(response.data.NanumcarSpotList.list_total_count / 1000);
-    //       }
-    //     })
-    //     .catch((error) => console.log(error));
-    //   startNumber += 1000; // 시작넘버 + 1000
-    //   endNumber += 1000; // 끝넘버 + 1000
-    //   // eslint-disable-next-line no-unused-vars
-    //   count += 1; // loop 돌아온 수
-    // } while (count < totalCount); // loop 돌아온 수가 돌아야 할 수 보다 적을 때, 한 번 돌기
-    // url 정보 변경 예정
-    axios.get('https://infuser.odcloud.kr/oas/15077586')
-      .then((response) => {
-        console.log(response);
-      });
+  computed: {
+  },
+  methods: {
+    /**
+     * 데이터 로드하기
+     */
+    async loadData() {
+      this.covidCenter = []; // 초기화
+      const startNumber = 1; // 시작넘버
+      const endNumber = 1000; // 끝넘버
+      let count = 0; // 카운트 수
+      let totalCount; // 전체 리스트 / 10의 올림 (리스트는 한 번에 10개 씩 가져올 수 있음)
+      // await axios.get(`http://openapi.seoul.go.kr:8088/${process.env.VUE_APP_API_KEY}/json/NanumcarSpotList/${startNumber}/${endNumber}`)
+      do {
+        // eslint-disable-next-line no-await-in-loop
+        await axios.get(`http://api.odcloud.kr/api/15077586/v1/centers?page=${startNumber}&perPage=${endNumber}&serviceKey=${process.env.VUE_APP_COVID_API_KEY}`)
+          .then((response) => {
+            this.covidCenter = [...this.covidCenter, ...response.data.data]; // 리스트 저장
+            if (!totalCount) { // 불필요한 계산을 막기 위함
+              totalCount = Math.ceil(response.data.totalCount / 100);
+            }
+          })
+          .catch((error) => console.log(error));
+        // startNumber += 1000; // 시작넘버 + 1000
+        // endNumber += 1000; // 끝넘버 + 1000
+        // eslint-disable-next-line no-unused-vars
+        count += 1; // loop 돌아온 수
+      } while (count < totalCount); // loop 돌아온 수가 돌아야 할 수 보다 적을 때, 한 번 돌기
+    },
+  },
+  created() {
+    this.loadData();
   },
 };
 </script>

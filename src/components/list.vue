@@ -6,9 +6,9 @@
 
 <script>
 export default {
-  props: ['carInfoList'],
+  props: ['covidCenter'],
   created() {
-    console.log('list', this.carInfoList);
+    console.log('list', this.covidCenter);
   },
 };
 </script>

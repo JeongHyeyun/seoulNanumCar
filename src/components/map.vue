@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  props: ['carInfoList'],
+  props: ['covidCenter'],
   data() {
     return {
       map: null,
@@ -31,8 +31,8 @@ export default {
   created() {
     setTimeout(() => { // 데이터 불러오는 로드의 시차
       // eslint-disable-next-line no-restricted-syntax
-      for (const car of this.carInfoList) {
-        const location = new kakao.maps.LatLng(car.LA, car.LO);
+      for (const car of this.covidCenter) {
+        const location = new kakao.maps.LatLng(car.lng, car.lat);
         this.drawLocation(location); // 맵에 그려주기
       }
     }, 1000);
