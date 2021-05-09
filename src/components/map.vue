@@ -20,20 +20,32 @@ export default {
      * @param {Object} location - 위치 {위도,경도}
      * @param {Boolean} inInit - 초기 로딩 여부
      */
-    drawLocation(location, isInit = false) {
+    drawLocation(location, title, isInit = false) {
       const marker = new kakao.maps.Marker({ // 마커 그리기
         position: location, // 그리는 곳 주소
       });
       marker.setMap(this.map); // 지도에 마커 표시
       if (isInit) this.map.setCenter(location); // 마커가 표시된 곳으로 지도 중심 이동
+      if (title) { // 마커에 표시 할 title이 있을 때,
+        const infoHtml = `<div style="padding: 5px;">${title}</div>`; // 생성할 html
+        const infoWindow = new kakao.maps.InfoWindow({ // 인포 윈도우 추가
+          content: infoHtml,
+        });
+        kakao.maps.event.addListener(marker, 'mouseover', () => { // hover 액션 시,
+          infoWindow.open(this.map, marker);
+        });
+        kakao.maps.event.addListener(marker, 'mouseout', () => { // hover out 액션 시,
+          infoWindow.close();
+        });
+      }
     },
   },
   created() {
     setTimeout(() => { // 데이터 불러오는 로드의 시차
       // eslint-disable-next-line no-restricted-syntax
-      for (const car of this.covidCenter) {
-        const location = new kakao.maps.LatLng(car.lng, car.lat);
-        this.drawLocation(location); // 맵에 그려주기
+      for (const covid of this.covidCenter) {
+        const location = new kakao.maps.LatLng(covid.lng, covid.lat);
+        this.drawLocation(location, covid.facilityName); // 맵에 그려주기
       }
     }, 1000);
   },
@@ -66,11 +78,11 @@ export default {
         const { latitude } = position.coords; // 위도
         const { longitude } = position.coords; // 경도
         const location = new kakao.maps.LatLng(latitude, longitude);
-        this.drawLocation(location, true);
+        this.drawLocation(location, '현위치', true);
       });
     } else { // 현재 위치를 구할 수 없는 조건일 때,
       const location = new kakao.maps.LatLng(37.57821, 126.976936); // 광화문 좌표
-      this.drawLocation(location, true);
+      this.drawLocation(location, null, true);
     }
   },
 };
