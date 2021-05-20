@@ -67,7 +67,7 @@ export default {
           })
           .catch((error) => console.log(error));
         // startNumber += 1000; // 시작넘버 + 1000
-        // endNumber += 1000; // 끝넘버 + 1000
+        // endNumber += 1000; // 끝넘버  + 1000
         // eslint-disable-next-line no-unused-vars
         count += 1; // loop 돌아온 수
       } while (count < totalCount); // loop 돌아온 수가 돌아야 할 수 보다 적을 때, 한 번 돌기
